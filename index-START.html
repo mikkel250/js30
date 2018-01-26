@@ -55,24 +55,83 @@
     // Array.prototype.sort()  video @ 5:48
     // Sort will take the items you give it and you sort by 1 and -1, and it will bubble them up in the correct order.
     // 3. Sort the inventors by birthdate, oldest to youngest
+    const ordered = inventors.sort(function(a, b) {
+      if (a.year > b.year) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
 
+    //shorter version with arrow function and ternary operator
+    const ordered = inventors.sort((a, b) => a.year ? 1 : -1);
 
 
     // Array.prototype.reduce()
+    // Reduce will give you a running total, like an if loop with a total +=
     // 4. How many years did all the inventors live?
+    const totalYears = inventors.reduce((total, inventor) => {
+      return total + (inventor.passed - inventor.year);
+    }, 0); // adding the zero here initializes the total variable with a zero value to start, so you don't get undefined in the return value
+    console.log(totalYears);
 
     // 5. Sort the inventors by years lived
+    const oldest = inventors.sort(function(a, b) {
+      const lastGuy = a.passed - b.passed;
+      const nextGuy = b.passed - b.year;
+      return lastGuy > nextGuy ? -1 : 1;
+      /* the above return statement (a ternary operator) replaces the if statement below.
+      if(lastGuy > nextGuy) {
+        return -1;
+      } else {
+        return 1;
+      } 
+      */
+    });
+
 
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
     // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
+    const category = document.querySelector(`.mw-category`); // this was gotten by going to the page and inspecting it, finding the element that contained all of the links. 
+    
+    // const links = category.querySelectorAll('a'); // find the links within it
+    // const de = links.map(link => link.textContent); 
+    
+    // The above will not work because the querySelector will return to you a nodeList. if you expand the prototype in the console, it will show available functions, but themap function is not available. forEach is available, though, so you would want to turn this into an array, because variable 'de' is a nodelist. see below for how.
+    const links = Array.from(category.querySelectorAll('a'));
+    const de = links //this + the below could be one line but he separated out for readability
+                    .map(link => link.textContent)
+                    .filter(streetName => streetName.includes('de'));
+
 
 
     // 7. sort Exercise
-    // Sort the people alphabetically by last name
+    // Sort the people alphabetically by last name (in the people array)
+    
+    // const alpha = people.sort(function(lastOne, nextOne) { 
+      const alpha = people.sort((lastOne, nextOne) => {   //this is the above rewritten with arrow function 
+      const [aLast, aFirst] = lastOne.split(','); // create variable (an array), then split on the comma for variable lastOne passed in above
+      const [bLast, bFirst] = nextOne.split(',');
+      return aLast > bLast ? 1 : -1; // sort descending with ternary      
+    });
+    console.log(alpha);
+
 
     // 8. Reduce Exercise
     // Sum up the instances of each of these
     const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck' ];
+
+
+    const transportation = data.reduce(function(obj, item) {
+      if(!obj[item]) {   // validation check to see if there is an item associated with that index as you walk through
+        obj[item] = 0; // if no item, set it to 0
+      }
+      obj[item]++;  // otherwise add 1 to that item
+      console.log(item);
+      return obj;
+    }, {}); // the brackets at the end here, before the close parenthesis is initializing the function with an empty object, since you don't know what all types you will be dealing with. Then loop over every single one.  
+
+
 
   </script>
 </body>
